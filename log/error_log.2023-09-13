@@ -1,0 +1,23 @@
+Sep 13 04:03:49 2023] [info] [client 188.165.223.112:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2020/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:03:58 2023] [info] [client 5.196.77.223:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wordpress/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:04:17 2023] [info] [client 206.189.143.129:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/cms/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:04:21 2023] [info] [client 206.189.143.129:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/sito/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:04:38 2023] [info] [client 68.183.16.227:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/test/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:04:52 2023] [info] [client 68.183.16.227:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/shop/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:04:53 2023] [info] [client 68.183.16.227:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/site/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:05:03 2023] [info] [client 188.165.223.112:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2021/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:05:26 2023] [info] [client 188.165.223.112:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/news/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:05:30 2023] [info] [client 5.196.77.223:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:06:14 2023] [info] [client 68.183.16.227:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp1/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:06:18 2023] [info] [client 5.196.77.223:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/web/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:07:06 2023] [info] [client 188.165.223.112:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2022/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:07:11 2023] [info] [client 68.183.16.227:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/media/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:07:21 2023] [info] [client 68.183.16.227:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp2/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:07:40 2023] [info] [client 188.165.223.112:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2019/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:08:02 2023] [info] [client 5.196.77.223:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:08:10 2023] [info] [client 5.196.77.223:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/website/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:08:32 2023] [info] [client 5.196.77.223:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/blog/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 04:10:29 2023] [info] [client 188.165.223.112:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2018/wp-includes/wlwmanifest.xml, referer dannyelfman.net
+Sep 13 12:00:38 2023] [info] [client 165.22.106.245:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/view-source:
+Sep 13 12:00:43 2023] [info] [client 165.22.106.245:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/misc/ajax.js
+Sep 13 18:00:55 2023] [info] [client 66.249.66.133:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt

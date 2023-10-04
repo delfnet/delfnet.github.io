@@ -1,0 +1,4 @@
+Oct 01 04:52:00 2023] [info] [client 66.249.70.193:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt
+Oct 01 05:22:00 2023] [info] [client 66.249.64.34:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt
+Oct 01 15:00:10 2023] [info] [client 205.234.144.230:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/.env
+Oct 01 15:37:04 2023] [info] [client 34.222.98.127:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico

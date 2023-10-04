@@ -1,0 +1,12 @@
+Sep 01 00:49:57 2023] [info] [client 81.17.18.106:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/.env
+Sep 01 07:03:33 2023] [info] [client 81.17.18.106:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/.gitlab-ci.yml
+Sep 01 10:07:42 2023] [info] [client 192.36.109.86:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt, referer http://dannyelfman.online/robots.txt
+Sep 01 10:07:42 2023] [info] [client 192.36.109.132:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/humans.txt, referer http://dannyelfman.online/humans.txt
+Sep 01 10:07:43 2023] [info] [client 192.36.109.96:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/ads.txt, referer http://dannyelfman.online/ads.txt
+Sep 01 10:09:50 2023] [info] [client 81.17.18.106:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/.s3cfg
+Sep 01 11:51:07 2023] [info] [client 172.173.117.166:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/alfanew.php7
+Sep 01 11:51:15 2023] [info] [client 172.173.117.166:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/ioxianeh3.php7
+Sep 01 13:40:27 2023] [info] [client 207.241.235.244:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico
+Sep 01 15:16:00 2023] [info] [client 35.90.194.22:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico
+Sep 01 15:33:33 2023] [info] [client 66.249.64.67:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt
+Sep 01 15:33:33 2023] [info] [client 66.249.64.68:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico

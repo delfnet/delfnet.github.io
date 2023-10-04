@@ -1,0 +1,3 @@
+Sep 29 15:41:08 2023] [info] [client 54.212.93.123:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico
+Sep 29 17:44:52 2023] [info] [client 76.50.135.221:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico, referer https://dannyelfman.net/
+Sep 29 23:02:16 2023] [info] [client 45.80.158.152:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp-content/plugins/essential-addons-for-elementor-lite/readme.txt, referer www.google.com

@@ -1,0 +1,6 @@
+Sep 21 07:34:21 2023] [info] [client 172.226.0.25:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico, referer http://www.dannyelfman.net/
+Sep 21 15:15:53 2023] [info] [client 103.67.163.79:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/.env
+Sep 21 16:11:36 2023] [info] [client 35.188.234.166:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico, referer http://dannyelfman.net/
+Sep 21 18:23:36 2023] [info] [client 146.247.229.2:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt
+Sep 21 18:23:37 2023] [info] [client 130.255.161.237:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/humans.txt
+Sep 21 18:23:38 2023] [info] [client 93.158.98.56:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/ads.txt

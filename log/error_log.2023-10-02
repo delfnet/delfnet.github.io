@@ -1,0 +1,28 @@
+Oct 02 02:06:25 2023] [info] [client 139.99.92.16:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp-includes/css/buttons.css
+Oct 02 02:27:17 2023] [info] [client 85.215.173.92:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/.env
+Oct 02 07:13:11 2023] [info] [client 66.249.74.75:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/robots.txt
+Oct 02 08:57:21 2023] [info] [client 178.128.110.224:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp-includes/wlwmanifest.xml
+Oct 02 08:57:29 2023] [info] [client 178.128.110.224:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/view-source:
+Oct 02 08:57:35 2023] [info] [client 178.128.110.224:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/misc/ajax.js
+Oct 02 11:52:34 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2021/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:53:00 2023] [info] [client 173.239.97.81:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/sito/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:54:22 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:54:35 2023] [info] [client 173.239.97.81:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/cms/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:55:15 2023] [info] [client 173.239.97.81:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp2/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:55:16 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/website/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:55:20 2023] [info] [client 173.239.97.81:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/media/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:56:14 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp1/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:56:26 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2019/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:56:27 2023] [info] [client 173.239.97.81:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/site/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:57:37 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/news/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:57:53 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/test/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:58:44 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2018/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:59:00 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wp/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 11:59:13 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2020/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 12:01:07 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/wordpress/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 12:03:09 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/shop/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 12:04:17 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/blog/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 12:06:44 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/web/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 12:08:38 2023] [info] [client 85.159.215.247:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/2022/wp-includes/css/admin-bar-rtl.css, referer dannyelfman.net
+Oct 02 22:00:45 2023] [info] [client 35.86.135.70:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico
+Oct 02 22:01:14 2023] [info] [client 35.87.19.151:0] AH00128: File does not exist: /data/27/6/134/136/6297299/user/7388169/htdocs/favicon.ico
