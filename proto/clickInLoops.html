@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>three.js webgl - interactive cubes</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link type="text/css" rel="stylesheet" href="../main.css">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            color: #444;
+
+        }
+
+        a {
+            color: #08f;
+        }
+
+        #container {
+            display: block;
+            left: 0px;
+            top: 0px;
+        }
+
+        #frontText {
+            position: absolute;
+            top: 0%;
+            left: 50%;
+            transform: translate(-50%, 60%);
+            font-size: 50px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #fff;
+            text-align: center;
+            z-index: 100;
+        }
+
+        #progress{
+            position: absolute;
+            height:10px;
+            top:50%;
+            margin-top:-5px;
+            background:#F00;
+        }
+        #startButton{
+            position: absolute;
+            height:20px;
+            width:100px;
+            top:50%;
+            left:50%;
+            margin-left:-50px;
+            margin-top:-10px;
+            background:#FF0;
+            text-align:center;
+            vertical-align: middle;
+line-height: 20px;  
+        
+        }
+        #progressText{
+            position: absolute;
+            height:20px;
+            width:100px;
+            top:50%;
+            left:50%;
+            margin-left:-50px;
+            margin-top:-10px;
+            background:#FF0;
+            text-align:center;
+            vertical-align: middle;
+line-height: 20px;  
+        
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div id="frontText"></div>
+    <div id="load">
+        <div id="progress"></div>
+        <div id="progressText">Loading...</div>
+        <a id="startButton" style="display:none">ENTER</a>
+    </div>
+
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+
+    <script type="importmap">
+			{
+				"imports": {
+					"three": "../lib/three.module.js",
+					"three/addons/": "../lib/"
+				}
+			}
+	</script>
+
+
+
+    <script type="module">
+
+        var lib = '../lib/';
+
+        import * as THREE from 'three';
+
+        import $ from "../lib/jquery.module.js";
+
+        import Stats from '../lib/stats.module.js';
+        import ObjectControls from '../lib/ObjectControls.js'
+        import AudioBuffer from '../lib/AudioBuffer.js'
+        import AudioController from '../lib/AudioController.js'
+        import BufferedAudio from '../lib/BufferedAudio.js'
+        import { OBJLoader } from '../lib/OBJLoader.js';
+        import MouseMoveControls from '../lib/MouseMoveControls.js'
+        import TextCreator from '../lib/TextCreator.js'
+
+        import Looper from '../lib/Looper.js'
+
+
+
+        import vs1 from '../shaders/vs-trace.js'
+        import fs1 from '../shaders/fs-trace.js'
+
+        // override cuz im useless
+        print = console.log;
+
+        let container, stats;
+        let camera, scene, raycaster, renderer;
+
+        let audio;
+
+        let tv1 = new THREE.Vector3();
+        let tv2 = new THREE.Vector3();
+        let looper;
+
+        let INTERSECTED;
+        let theta = 0;
+
+        const pointer = new THREE.Vector2();
+        const radius = 100;
+        let controls;
+        var camControls;
+        let clock = new THREE.Clock();
+
+        clock.deltaTime = 0;
+
+
+
+
+        let manager = new THREE.LoadingManager();
+
+        // get element by id
+        var progress = document.getElementById('progress');
+        var progressText = document.getElementById('progressText');
+        var startButton = document.getElementById('startButton');
+        var loadDiv = document.getElementById('load');
+
+
+        startButton.onclick = function () {
+            progress.display = 'none';
+            progressText.display = 'none';
+            loadDiv.style.display = 'none';
+            init();
+            audio.ctx.resume();
+            animate();
+        }
+
+        manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+            progress.style.width = (itemsLoaded / itemsTotal * 100) + '%';
+            console.log(url);
+            console.log("PROGGERS  :" + (itemsLoaded / itemsTotal * 100) + '%');
+        };
+
+        manager.onLoad = function () {
+
+            console.log("lads");
+            startButton.style.display = 'block';
+            progressText.style.display = 'none';
+            loadDiv.style.display = 'block';
+            //init();
+            //audio.ctx.resume();
+            //animate();
+
+        }
+
+
+
+        // instantiate a loader
+        const audioLoader = new THREE.AudioLoader(manager);
+        const textureLoader = new THREE.TextureLoader(manager);
+        const objLoader = new OBJLoader(manager);
+
+
+
+        const audioSamples = {}
+        const stems = [];
+
+        const textures = {}
+        const models = {}
+
+        const audioLoopObjects = [];
+
+        function load() {
+
+            audioLoader.load('../audio/01 Melodic Enter.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.enter1 = buffer;
+            });
+
+
+            audioLoader.load('../audio/stems/stem 1_bassoon_bells_bass.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem1 = buffer;
+                stems[0] = buffer;
+            });
+
+            audioLoader.load('../audio/stems/stem 2_short strings.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem2 = buffer;
+                stems[1] = buffer;
+            });
+
+
+            audioLoader.load('../audio/stems/stem 3_low strings.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem3 = buffer;
+                stems[2] = buffer;
+            });
+
+
+            audioLoader.load('../audio/stems/stem 4_rhythm section.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem4 = buffer;
+                stems[3] = buffer;
+            });
+
+
+            audioLoader.load('../audio/stems/stem 5_ guit 1.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem5 = buffer;
+                stems[4] = buffer;
+            });
+
+            audioLoader.load('../audio/stems/stem 6_guit 2.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem6 = buffer;
+                stems[5] = buffer;
+            });
+
+
+            audioLoader.load('../audio/stems/stem 7 _guit 3.wav', function (buffer) {
+                console.log("loaded audio");
+                audioSamples.stem7 = buffer;
+                stems[6] = buffer;
+            });
+
+
+
+
+
+
+            textureLoader.load('../img/rough-aluminium.jpg', function (texture) {
+                textures.matcap = texture;
+            });
+            textureLoader.load('../img/t_n_snakeSkin.png', function (texture) {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                textures.normal = texture;
+            });
+
+            objLoader.load('../models/handClean1.obj', function (object) {
+                models.hand = object;
+            });
+
+           /* objLoader.load('../models/skull3.obj', function (object) {
+                models.skull = object;
+            });*/
+
+
+            objLoader.load('../models/testSkullSplit/fullSkull.obj', function (object) {
+                models.skull = object;
+            });
+
+
+            objLoader.load('../models/testSkullSplit/filmText.obj', function (object) {
+                models.filmText = object;
+            });
+
+            objLoader.load('../models/testSkullSplit/filmShield.obj', function (object) {
+                models.filmShield = object;
+            });
+
+
+            objLoader.load('../models/testSkullSplit/classicalText.obj', function (object) {
+                models.classicalText = object;
+            });
+
+            objLoader.load('../models/testSkullSplit/classicalShield.obj', function (object) {
+                models.classicalShield = object;
+            });
+
+
+            objLoader.load('../models/testSkullSplit/miscText.obj', function (object) {
+                models.miscText = object;
+            });
+
+            objLoader.load('../models/testSkullSplit/miscShield.obj', function (object) {
+                models.miscShield = object;
+            });
+
+
+            objLoader.load('../models/testSkullSplit/rockText.obj', function (object) {
+                models.rockText = object;
+            });
+
+            objLoader.load('../models/testSkullSplit/rockShield.obj', function (object) {
+                models.rockShield = object;
+            });
+
+
+        }
+
+
+
+
+
+
+        load();                                                                                                               
+
+
+        var cornerLinks = [];
+        var musicCornerLinks = [];
+
+
+        var uniforms = {
+
+            dT: { type: "f", value: 0 },
+            time: { type: "f", value: 0 },
+            lightPos: { type: "v3", value: null },
+            t_matcap: { type: "t", value: textures.matcap },
+            t_normal: { type: "t", value: textures.normal },
+
+        }
+
+
+
+        function init() {
+
+            uniforms.t_matcap.value = textures.matcap;
+            uniforms.t_normal.value = textures.normal;
+
+
+            container = document.createElement('div');
+            container.id = 'container';
+            document.body.appendChild(container);
+
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+
+            controls = new ObjectControls(camera);
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000);
+
+            camControls = new MouseMoveControls(camera, container);
+            camControls.z = 140;
+
+            clock = new THREE.Clock();
+            clock.start();
+
+
+
+            const geometry = new THREE.BoxGeometry(20, 20, 20);
+
+
+
+            const corners = getScreenCornersInWorld(camera, 100, 1);
+
+            console.log(models.hand.children[0].geometry);
+
+            var handMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+
+                    dT: uniforms.dT,
+                    time: uniforms.time,
+                    lightPos: uniforms.lightPos,
+                    t_matcap: uniforms.t_matcap,
+                    t_normal: uniforms.t_normal,
+
+                    _NoiseSize: { type: "f", value: .1 },
+                    _NoiseSpeed: { type: "f", value: 1.5 },
+                    _NoiseOffset: { type: "f", value: .3 },
+                    _HueStart: { type: "f", value: .8 },
+                    _HueSize: { type: "f", value: .01 },
+                    _NormalDepth: { type: "f", value: .1 },
+                    _FFTStart: { type: "f", value: .1 },
+                    _FFTSize: { type: "f", value: .1 },
+                    _Saturation: { type: "f", value: .1 },
+                    _Lightness: { type: "f", value: 1 },
+                    _DiscardAmount: { type: "f", value: 0 }
+
+                },
+                vertexShader: vs1,
+                fragmentShader: fs1,
+                side: THREE.DoubleSide
+            })
+
+            handMaterial.extensions.derivatives = true;
+
+            var linkInfo = [
+                "MERCH",
+                "BIO",
+                "ABOUT",
+                "PHOTOS"
+            ]
+
+            var textCreator = new TextCreator(10);
+
+
+            var transparentMaterial = new THREE.MeshBasicMaterial({
+                transparent: true,
+                opacity: 0,
+                depthWrite: false,
+            });
+
+            for (var i = 0; i < 4; i++) {
+
+
+                var text = textCreator.createMesh(linkInfo[i]);
+                text.position.set(0, 0, 0);
+                text.position.set(corners[i].x, corners[i].y, corners[i].z);
+                scene.add(text);
+                var hand = new THREE.Mesh(models.hand.children[0].geometry, handMaterial);
+                console.log(corners[i]);
+                //sphere.position.set(corners[i].x, corners[i].y, corners[i].z);
+
+
+                hand.scale.x = 2;
+                hand.scale.y = 2;
+                hand.scale.z = 2;
+                hand.position.z = -1;
+
+                text.hand = hand;
+                //controls.add(hand);
+
+                scene.add(text);
+                scene.add(hand);
+
+
+                var touchSphere = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 2), transparentMaterial);
+                touchSphere.hand = hand;
+                touchSphere.text = text;
+                touchSphere.linkInfo = linkInfo[i];
+
+                touchSphere.hoverOver = function () {
+
+                    this.text.material.color = new THREE.Color(0x0000ff);
+                }
+
+                touchSphere.hoverOut = function () {
+                    this.text.material.color = new THREE.Color(0x00ff00);
+
+
+                }
+
+                touchSphere.select = function () {
+
+                    clickLink(this.linkInfo);
+                }
+
+                controls.add(touchSphere);
+
+                text.add(touchSphere);
+
+
+                cornerLinks[i] = hand;
+                cornerLinks[i].text = text;
+
+            }
+
+
+            
+
+
+            var musicLinkInfo = [
+                "ROCK",
+                "CLASSICAL",
+                "FILM",
+                "MISC"
+            ]
+            var handMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+
+                    dT: uniforms.dT,
+                    time: uniforms.time,
+                    lightPos: uniforms.lightPos,
+                    t_matcap: uniforms.t_matcap,
+                    t_normal: uniforms.t_normal,
+
+                    _NoiseSize: { type: "f", value: 5.1 },
+                    _NoiseSpeed: { type: "f", value: .2 },
+                    _NoiseOffset: { type: "f", value: .03 },
+                    _HueStart: { type: "f", value: .8 },
+                    _HueSize: { type: "f", value: .05 },
+                    _NormalDepth: { type: "f", value: .1 },
+                    _FFTStart: { type: "f", value: .1 },
+                    _FFTSize: { type: "f", value: .1 },
+                    _Saturation: { type: "f", value: 1 },
+                    _Lightness: { type: "f", value: 1 },
+                    _DiscardAmount: { type: "f", value: 0 }
+
+                },
+                vertexShader: vs1,
+                fragmentShader: fs1,
+                side: THREE.DoubleSide
+            })
+            
+            
+            var geo = new THREE.IcosahedronGeometry( 1 , 4);
+
+            for (var i = 0; i < 4; i++) {
+
+
+                var text = textCreator.createMesh(musicLinkInfo[i]);
+                text.position.set(0, 0, 0);
+                text.scale.x = .3;
+                text.scale.y = .3;
+                text.scale.z = .3;
+
+                //text.position.set(corners[i].x, corners[i].y, corners[i].z);
+                scene.add(text);
+                var hand = new THREE.Mesh(geo, handMaterial);
+                console.log(corners[i]);
+                //sphere.position.set(corners[i].x, corners[i].y, corners[i].z);
+
+
+                hand.scale.x = .4;
+                hand.scale.y = .4;
+                hand.scale.z = .4;
+                hand.position.z = -1;
+
+                text.hand = hand;
+                //controls.add(hand);
+
+                scene.add(text);
+                scene.add(hand);
+
+
+                var touchSphere = new THREE.Mesh(new THREE.IcosahedronGeometry(1.8, 2), transparentMaterial);
+                touchSphere.hand = hand;
+                touchSphere.text = text;
+                touchSphere.linkInfo = musicLinkInfo[i];
+
+                touchSphere.hoverOver = function () {
+                    this.text.material.color = new THREE.Color(0x0000ff);
+                }
+
+                touchSphere.hoverOut = function () {
+                    this.text.material.color = new THREE.Color(0x00ff00);
+                }
+
+                touchSphere.select = function () {
+
+                    clickLink(this.linkInfo);
+                }
+
+                controls.add(touchSphere);
+
+                text.add(touchSphere);
+
+
+                musicCornerLinks[i] = hand;
+                musicCornerLinks[i].text = text;
+
+            }
+
+
+
+
+
+
+
+
+            var handMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+
+                    dT: uniforms.dT,
+                    time: uniforms.time,
+                    lightPos: uniforms.lightPos,
+                    t_matcap: uniforms.t_matcap,
+                    t_normal: uniforms.t_normal,
+
+                    _NoiseSize: { type: "f", value: .1 },
+                    _NoiseSpeed: { type: "f", value: 1.5 },
+                    _NoiseOffset: { type: "f", value: 1.3 },
+                    _HueStart: { type: "f", value: .3 },
+                    _HueSize: { type: "f", value: .01 },
+                    _NormalDepth: { type: "f", value: .1 },
+                    _FFTStart: { type: "f", value: .1 },
+                    _FFTSize: { type: "f", value: .1 },
+                    _Saturation: { type: "f", value: 1.7 },
+                    _Lightness: { type: "f", value: 1 },
+                    _DiscardAmount: { type: "f", value: 0 }
+
+                },
+                vertexShader: vs1,
+                fragmentShader: fs1,
+                side: THREE.DoubleSide
+            })
+
+            handMaterial.extensions.derivatives = true;
+
+
+
+
+            // MAIN SKULL
+
+
+            var musicText = textCreator.createMesh("MUSIC");
+
+            musicText.position.set(0, 25, 25);
+            musicText.scale.x = 20.3;
+            musicText.scale.y = 20.3;
+            musicText.scale.z = 20.3;
+            
+
+            //musicText.position.set(corners[i].x, corners[i].y, corners[i].z);
+            scene.add(musicText);
+
+            var skullMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+
+                    dT: uniforms.dT,
+                    time: uniforms.time,
+                    lightPos: uniforms.lightPos,
+                    t_matcap: uniforms.t_matcap,
+                    t_normal: uniforms.t_normal,
+
+
+                    _NoiseSize: { type: "f", value: .1 },
+                    _NoiseSpeed: { type: "f", value: .5 },
+                    _NoiseOffset: { type: "f", value: .1 },
+                    _HueStart: { type: "f", value: .1 },
+                    _HueSize: { type: "f", value: .01 },
+                    _NormalDepth: { type: "f", value: .1 },
+                    _FFTStart: { type: "f", value: .1 },
+                    _FFTSize: { type: "f", value: .1 },
+                    _Saturation: { type: "f", value: 0 },
+                    _Lightness: { type: "f", value: 1 },
+                    _DiscardAmount: { type: "f", value: 0 }
+
+                },
+                vertexShader: vs1,
+                fragmentShader: fs1,
+                side: THREE.DoubleSide
+            })
+
+            skullMaterial.extensions.derivatives = true;
+
+
+            var sphere = new THREE.Mesh(models.skull.children[0].geometry, skullMaterial);
+            sphere.scale.x = 2.5;
+            sphere.scale.y = 2.5;
+            sphere.scale.z = 2.5;
+            sphere.position.y = 6;
+            sphere.position.z = -20;
+            scene.add(sphere);
+            controls.add(sphere);
+            sphere.text = musicText;
+
+            sphere.hoverOver = function () { }
+
+            sphere.hoverOut = function () { }
+
+            sphere.select = function () {
+                //audio.samples['enter1'].play();
+                ToggleCameraPosition();
+            }
+            sphere.deselect = function () {
+                console.log("deselected");
+            }
+
+            sphere.update = function () {
+                console.log("updating");
+            }
+
+
+
+            sphere.hoverOver = function () {
+                    this.text.material.color = new THREE.Color(0x0000ff);
+                }
+
+                sphere.hoverOut = function () {
+                    this.text.material.color = new THREE.Color(0x00ff00);
+                }
+
+
+
+
+
+
+
+
+            // SkullLinks
+
+            /* var linkInfo = [
+                 "You Clicked<br/><br/> ROCK",
+                 "You Clicked<br/><br/> CLASSICAL",
+                 "You Clicked<br/><br/> FILM",
+                 "You Clicked<br/><br/> MISC"
+             ]
+ 
+             var rockLink = new SkullLink({
+                 vertexShader: vs1,
+                 fragmentShader: fs1,
+                 geometry: models.rockText.children[0].geometry,
+                 shield: models.rockShield.children[0].geometry,
+                 uniforms: uniforms,
+                 linkInfo: "ROCK",
+                 scale: 2,
+                 controls: controls,
+                 scene: scene
+             })
+ 
+ 
+             var miscLink = new SkullLink({
+                 vertexShader: vs1,
+                 fragmentShader: fs1,
+                 geometry: models.miscText.children[0].geometry,
+                 shield: models.miscShield.children[0].geometry,
+                 uniforms: uniforms,
+                 linkInfo: "misc",
+                 scale: 2,
+                 controls: controls,
+                 scene: scene
+             })
+ 
+             var classicalLink = new SkullLink({
+                 vertexShader: vs1,
+                 fragmentShader: fs1,
+                 geometry: models.classicalText.children[0].geometry,
+                 shield: models.classicalShield.children[0].geometry,
+                 uniforms: uniforms,
+                 linkInfo: "classical",
+                 scale: 2,
+                 controls: controls,
+                 scene: scene
+             })
+ 
+             var filmLink = new SkullLink({
+                 vertexShader: vs1,
+                 fragmentShader: fs1,
+                 geometry: models.filmText.children[0].geometry,
+                 shield: models.filmShield.children[0].geometry,
+                 uniforms: uniforms,
+                 linkInfo: "film",
+                 scale: 2,
+                 controls: controls,
+                 scene: scene
+             })
+ */
+            raycaster = new THREE.Raycaster();
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            stats = new Stats();
+            // container.appendChild(stats.dom);
+
+            document.addEventListener('mousemove', onPointerMove);
+
+            //
+
+            window.addEventListener('resize', onWindowResize);
+
+
+            audio = new AudioController();
+            audio.samples = {};
+            console.log("AS");
+            console.log(audioSamples);
+
+            for (let key in audioSamples) {
+                console.log("made");
+                audio.samples[key] = (new BufferedAudio(audioSamples[key], audio.ctx, audio.gain));
+            }
+
+            
+
+            for( var i = 0; i < 7; i++ ){
+                audioLoopObjects[i] = new AudioLoop(new BufferedAudio( stems[i] , audio.ctx,audio.gain));
+                audioLoopObjects[i].position.x = (Math.random()-.5) * 1;
+                audioLoopObjects[i].position.y = (i-3) * .5+ 20;
+                audioLoopObjects[i].position.z = (Math.random()-.5) * 1+ 1;
+
+
+                audioLoopObjects[i].scale.x = .2;
+                audioLoopObjects[i].scale.y = .2;
+                audioLoopObjects[i].scale.z = .2;
+                audioLoopObjects[i].loop.gainNode.gain.setValueAtTime(0, audio.ctx.currentTime);
+                scene.add(audioLoopObjects[i]);
+
+            }
+
+  looper = new Looper( audio , uniforms , {
+
+    beatsPerMinute:     82.5,
+    beatsPerMeasure:      4,
+    beatType:             4,
+    measuresPerLoop:      10
+
+});
+
+
+
+looper.everyLoop(function(){
+    for( var i = 0; i < 7; i++){
+        audioLoopObjects[i].loop.play();
+    }
+
+})
+
+looper.start();
+
+
+
+            const radius = 200;
+
+            var geometry1 = new THREE.BufferGeometry();
+
+            const positions = [];
+            const colors = [];
+            const sizes = [];
+
+            const color = new THREE.Color();
+            var particles = 1000;
+
+            for (let i = 0; i < particles; i++) {
+
+                positions.push((Math.random() * 2 - 1) * radius);
+                positions.push((Math.random() * 2 - 1) * radius);
+                positions.push((Math.random() * 2 - 1) * radius);
+
+                color.setHSL(i / particles, 0, 1);
+
+                colors.push(color.r, color.g, color.b);
+
+                sizes.push(1);
+
+            }
+
+            geometry1.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry1.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            geometry1.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1).setUsage(THREE.DynamicDrawUsage));
+
+            var particleSystem = new THREE.Points(geometry1, new THREE.PointsMaterial({ size: 1, vertexColors: true }));
+
+            scene.add(particleSystem);
+
+
+        }
+
+
+        function getScreenCornersInWorld(camera, distance, size) {
+            const topLeft = new THREE.Vector3(-size, size, -size);
+            const topRight = new THREE.Vector3(size, size, -size);
+            const bottomLeft = new THREE.Vector3(-size, -size, -size);
+            const bottomRight = new THREE.Vector3(size, -size, -size);
+
+            const corners = [topLeft, topRight, bottomLeft, bottomRight];
+
+            return corners.map(corner => {
+                corner.unproject(camera);
+                const direction = corner.sub(camera.position).normalize();
+                return camera.position.clone().add(direction.multiplyScalar(distance));
+            });
+        }
+
+
+        function getPositionsAroundSkull(size, angleSize, angleStart, yOffset) {
+
+            var corners = [];
+            for (var i = 0; i < 4; i++) {
+
+                var n = i / 4;
+                var a = (n * angleSize + angleStart) * 6.28;
+
+                var x = Math.cos(a) * size;
+                var y = Math.sin(a) * size;
+                corners.push(new THREE.Vector3(x, y+yOffset, 0));
+            }
+
+            return corners;
+
+
+        }
+
+
+        function getRotationsAroundSkull(angleSize, angleStart) {
+
+            var corners = [];
+            for (var i = 0; i < 4; i++) {
+
+                var n = i / 4;
+                var a = (n * angleSize + angleStart) * 6.28;
+
+                const quaternion = new THREE.Quaternion();
+                quaternion.setFromEuler(new THREE.Euler(0, 0, a));
+                quaternion.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2, 0, 0)));
+
+                corners.push(quaternion);
+            }
+
+            return corners;
+
+
+        }
+
+        function onWindowResize() {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function onPointerMove(event) {
+
+            pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+        }
+
+        //
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+            camControls.update();
+            controls.update();
+
+            render();
+            stats.update();
+
+        }
+
+        function render() {
+
+
+
+            theta += 0.1;
+
+            clock.deltaTime = clock.getDelta();
+            uniforms.dT.value = clock.deltaTime;
+            uniforms.time.value = clock.elapsedTime;
+
+            looper._update();
+
+            // camera.position.z = radius;
+
+            //camera.position.x = radius * Math.sin(THREE.MathUtils.degToRad(theta));
+            //camera.position.y = radius * Math.sin(THREE.MathUtils.degToRad(theta));
+            //camera.position.z = radius * Math.cos(THREE.MathUtils.degToRad(theta));
+            //   camera.lookAt(scene.position);
+
+            // camera.updateMatrixWorld();
+
+
+            // const corners = getScreenCornersInWorld(camera, 100, .8);
+
+            var angleSize = 1;
+            var angleStart = 0.12;
+            var corners = getPositionsAroundSkull(50.5, angleSize, angleStart,0);
+            var cornerRotations = getRotationsAroundSkull(angleSize, angleStart);
+
+            for (var i = 0; i < 4; i++) {
+                cornerLinks[i].position.lerp(corners[i], .04);//).set(corners[i].x, corners[i].y, corners[i].z);// = sphere;
+                //cornerLinks[i].hand.rotation.x += 0.003 * Math.sin(i + 331.);
+                //cornerLinks[i].hand.rotation.y += 0.003 * Math.sin(i * 10 + 31);
+                //cornerLinks[i].hand.rotation.z += 0.003 * Math.sin(i * 21 + 21);
+
+                cornerLinks[i].quaternion.copy(cornerRotations[i]);//.slerp(cornerRotations[i], 1);
+                cornerLinks[i].updateMatrixWorld();
+
+                cornerLinks[i].text.position.copy(cornerLinks[i].position.clone().add(new THREE.Vector3(0, 0, 10)));
+            }
+
+
+
+            var angleSize = 1;
+            var angleStart = .64;
+            var corners = getPositionsAroundSkull(1.5, angleSize, angleStart,20);
+            var cornerRotations = getRotationsAroundSkull(angleSize, angleStart);
+
+            for (var i = 0; i < 4; i++) {
+                musicCornerLinks[i].position.lerp(corners[i], .04);//).set(corners[i].x, corners[i].y, corners[i].z);// = sphere;
+                //musicCornerLinks[i].hand.rotation.x += 0.003 * Math.sin(i + 331.);
+                //musicCornerLinks[i].hand.rotation.y += 0.003 * Math.sin(i * 10 + 31);
+                //musicCornerLinks[i].hand.rotation.z += 0.003 * Math.sin(i * 21 + 21);
+
+                musicCornerLinks[i].quaternion.copy(cornerRotations[i]);//.slerp(cornerRotations[i], 1);
+                musicCornerLinks[i].updateMatrixWorld();
+
+                musicCornerLinks[i].text.position.copy(musicCornerLinks[i].position.clone().add(new THREE.Vector3(0, 0, 1)));
+            }
+
+
+
+
+            renderer.render(scene, camera);
+
+        }
+
+
+        var frontText = document.getElementById("frontText");
+        function clickLink(text) {
+            frontText.innerHTML = text;
+            setTimeout(function () {
+                frontText.innerHTML = "";
+            }, 1000);
+        }
+
+
+        function ToggleCameraPosition() {
+            var cc = camControls;
+            if (cc.z == 140) {
+                cc.z = 5;
+                cc.speed = .0001;
+                cc.center.y = 20;
+            } else {
+                cc.z = 140;
+                cc.speed = .002;
+                cc.center.y = 0;
+            }
+        }
+
+
+        function CornerLink(params) {
+
+        }
+
+
+/*
+
+        function SkullLink(params) {
+
+
+            var vs1 = params.vertexShader;
+            var fs1 = params.fragmentShader;
+            var geo = params.geometry;
+            var shield = params.shield;
+            var uniforms = params.uniforms;
+            var linkInfo = params.linkInfo;
+            var scale = params.scale;
+            var controls = params.controls;
+            var scene = params.scene;
+
+
+            var hueStart = { type: "f", value: .1 }
+            var hueSize = { type: "f", value: .1 }
+            var sphereMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+
+                    dT: uniforms.dT,
+                    time: uniforms.time,
+                    lightPos: uniforms.lightPos,
+                    t_matcap: uniforms.t_matcap,
+                    t_normal: uniforms.t_normal,
+
+
+                    _NoiseSize: { type: "f", value: .1 },
+                    _NoiseSpeed: { type: "f", value: .5 },
+                    _NoiseOffset: { type: "f", value: 1.3 },
+                    _HueStart: hueStart,
+                    _HueSize: hueSize,
+                    _NormalDepth: { type: "f", value: 100.1 },
+                    _FFTStart: { type: "f", value: .1 },
+                    _FFTSize: { type: "f", value: .1 },
+                    _Saturation: { type: "f", value: 1.7 },
+                    _Lightness: { type: "f", value: 2 },
+                    _DiscardAmount: { type: "f", value: 0 }
+
+                },
+                vertexShader: vs1,
+                fragmentShader: fs1,
+                side: THREE.DoubleSide
+            })
+
+            sphereMaterial.extensions.derivatives = true;
+
+            var mat = new THREE.MeshBasicMaterial();
+
+            var main = new THREE.Mesh(geo, mat);
+            scene.add(main);
+            main.linkInfo = linkInfo;
+            main.scale.x = scale;
+            main.scale.y = scale;
+            main.scale.z = scale;
+            main.select = function () {
+                clickLink(this.linkInfo);
+            }
+            controls.add(main);
+
+            var transparentMaterial = new THREE.MeshBasicMaterial({
+                transparent: true,
+                opacity: 0,
+                depthWrite: false,
+            });
+
+            var shield = new THREE.Mesh(shield, transparentMaterial);
+            scene.add(shield);
+            shield.scale.x = scale;
+            shield.scale.y = scale;
+            shield.scale.z = scale;
+            shield.shieldedMesh = main;
+            shield.hueStart = hueStart;
+            shield.hueSize = hueSize;
+            shield.linkInfo = linkInfo;
+            shield.linkMat = mat;
+            shield.select = function () {
+                this.hueStart.value = .2;
+                this.hueSize.value = .5;
+
+                clickLink(this.linkInfo);
+            }
+            shield.hueStart.value = 0;
+            shield.hueSize.value = .01;
+            shield.hoverOver = function () {
+                mat.color = new THREE.Color(0xff0000);
+                this.hueStart.value = 0.4;
+                this.hueSize.value = .03;
+            }
+
+            shield.hoverOut = function () {
+                mat.color = new THREE.Color(0xffffff);
+                this.hueStart.value = 0;
+                this.hueSize.value = .01;
+            }
+            controls.add(shield);
+
+
+        }*/
+
+
+
+        function AudioLoop(loop) {
+
+
+
+var geo = new THREE.IcosahedronGeometry(1,1);
+
+var mat = new THREE.ShaderMaterial({
+                uniforms: {
+
+                    dT: uniforms.dT,
+                    time: uniforms.time,
+                    lightPos: uniforms.lightPos,
+                    t_matcap: uniforms.t_matcap,
+                    t_normal: uniforms.t_normal,
+
+                    _NoiseSize: { type: "f", value: 5.1 },
+                    _NoiseSpeed: { type: "f", value: .2 },
+                    _NoiseOffset: { type: "f", value: .03 },
+                    _HueStart: { type: "f", value: .1 + Math.random()},
+                    _HueSize: { type: "f", value: .05 },
+                    _NormalDepth: { type: "f", value: .1 },
+                    _FFTStart: { type: "f", value: .1 },
+                    _FFTSize: { type: "f", value: .1 },
+                    _Saturation: { type: "f", value: 1 },
+                    _Lightness: { type: "f", value: 1 },
+                    _DiscardAmount: { type: "f", value: 0 }
+
+                },
+                vertexShader: vs1,
+                fragmentShader: fs1,
+                side: THREE.DoubleSide
+            })
+            
+
+mat.uniforms._Lightness.value = 0;//= new THREE.Color(0x000000);
+
+var main = new THREE.Mesh(geo, mat);
+scene.add(main);
+main.select = function () {
+    print( this );
+    this.toggleLoop();
+}.bind(main);
+main.loop = loop;
+main.loopOn = false;
+main.toggleLoop = function(){
+
+    if( this.loopOn ){
+        console.log(this);
+        console.log(this.material );
+        this.material.uniforms._Lightness.value = 0;//color = new THREE.Color(0x000000);
+        this.loopOn = false;
+        this.loop.gainNode.gain.setValueAtTime( 0 , audio.ctx.currentTime);
+    }else{
+        
+     //   this.material.color = new THREE.Color(0xffffff);
+        this.loopOn = true; 
+        
+        this.material.uniforms._Lightness.value = 1;
+        this.loop.gainNode.gain.setValueAtTime( .4 , audio.ctx.currentTime);
+    }
+}
+
+
+main.hoverOver = function(){
+    //this.material.color = new THREE.Color(0xaaaaaa);
+    this.material.uniforms._Lightness.value = .5;
+}.bind(main);
+
+main.hoverOut = function(){
+
+    
+    this.material.uniforms._Lightness.value = 0;
+   // this.material.color = new THREE.Color(0x000000);
+    if( this.loopOn ){
+    this.material.uniforms._Lightness.value = 1;}
+}.bind( main);
+controls.add(main);
+
+return main;
+
+
+}
+
+    </script>
+
+</body>
+
+</html>
